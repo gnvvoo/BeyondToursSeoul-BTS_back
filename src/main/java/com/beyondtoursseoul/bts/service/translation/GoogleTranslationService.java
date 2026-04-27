@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -38,7 +40,7 @@ public class GoogleTranslationService implements TranslationService {
                             .build())
                     .retrieve().body(GoogleTranslationResponse.class);
 
-            if (response != null && response.getData() != null) {
+            if (response != null && response.getData() != null && !response.getData().getTranslations().isEmpty()) {
                 return response.getData().getTranslations().get(0).getTranslatedText();
             }
         } catch (Exception e) {
@@ -50,14 +52,42 @@ public class GoogleTranslationService implements TranslationService {
 
     @Override
     public List<String> translateBatch(List<String> texts, String sourceLang, String targetLang) {
+        if (texts == null || texts.isEmpty()) return List.of();
+
+        try {
+            Map<String, Object> requestBody = Map.of(
+                    "q", texts,
+                    "source", sourceLang,
+                    "target", targetLang,
+                    "format", "text"
+            );
+
+            GoogleTranslationResponse response = restClient.post()
+                    .uri(uriBuilder ->
+                            uriBuilder.queryParam("key", apiKey).build())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(requestBody)
+                    .retrieve()
+                    .body(GoogleTranslationResponse.class);
+
+            if (response != null && response.getData() != null) {
+                List<String> textList = response.getData()
+                        .getTranslations()
+                        .stream()
+                        .map(translation -> translation.getTranslatedText())
+                        .toList();
+                return textList;
+            }
+        } catch (Exception e) {
+            log.error("Google API 호출 실패: {}", e.getMessage());
+        }
+        
+        // [수정] 실패 시 원본 대신 빈 리스트 반환하여 호출 측에서 감지하도록 함
         return List.of();
     }
 
-
-    /// 내부에 dto 선언 - 여기서만 사용함
-    /// json 형식 따라 설정
-    @Getter // response에서 data필드 가져올 때 사용
-    @NoArgsConstructor  // jackson에서 텅빈 박스를 먼저 가져오고 거기에 채워넣는 방식을 사용, 그래 없으면 에러
+    @Getter
+    @NoArgsConstructor
     private static class GoogleTranslationResponse {
         private Data data;
 
