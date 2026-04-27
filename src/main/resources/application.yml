@@ -25,6 +25,9 @@ spring:
           issuer-uri: ${SUPABASE_JWT_ISSUER}
           jwk-set-uri: ${SUPABASE_JWT_JWKS_URI}
 
+  config:
+    import: optional:file:.env[.properties] # .env파일에서 환경변수 로드
+
 server:
   port: 8080
 
@@ -32,3 +35,12 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
+
+seoul:
+  open-api:
+    key: ${SEOUL_OPEN_API_KEY}
+
+google:
+  translation:
+    api:
+      key: ${GOOGLE_TRANSLATION_API_KEY}
