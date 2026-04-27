@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.MultiPolygon;
 
 @Entity
 @Table(name = "dong_boundary")
@@ -20,13 +19,13 @@ public class DongBoundary {
     @Column(name = "dong_name", length = 50)
     private String dongName;
 
-    @Column(columnDefinition = "GEOMETRY(MultiPolygon, 4326)")
-    private MultiPolygon geom;
+    // geom 컬럼은 JdbcTemplate + ST_GeomFromGeoJSON으로 직접 관리
+    @Transient
+    private Object geom;
 
     @Builder
-    public DongBoundary(String dongCode, String dongName, MultiPolygon geom) {
+    public DongBoundary(String dongCode, String dongName) {
         this.dongCode = dongCode;
         this.dongName = dongName;
-        this.geom = geom;
     }
 }
