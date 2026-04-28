@@ -1,6 +1,6 @@
 package com.beyondtoursseoul.bts.controller.locker;
 
-import com.beyondtoursseoul.bts.dto.locker.LockerResponseDto;
+import com.beyondtoursseoul.bts.dto.locker.LockerApiResponseDto;
 import com.beyondtoursseoul.bts.service.locker.LockerService;
 import com.beyondtoursseoul.bts.service.translation.LockerTranslationService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,10 @@ public class LockerController {
     private final LockerService lockerService;
     private final LockerTranslationService lockerTranslationService;
 
+
     /// 물품보관함 데이터 호출 api
     @GetMapping("/test")
-    public LockerResponseDto testLockerApi() {
+    public LockerApiResponseDto testLockerApi() {
         return lockerService.fetchLockerData();
     }
 
