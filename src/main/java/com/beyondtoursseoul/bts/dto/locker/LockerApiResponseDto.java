@@ -1,6 +1,6 @@
 package com.beyondtoursseoul.bts.dto.locker;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -52,64 +52,66 @@ public class LockerApiResponseDto {
 
     /**
      * 실제 보관함 1개에 대한 상세 데이터
+     * @JsonAlias를 사용하여 외부 API의 알아보기 쉬운 필드명으로 수정
+     * @JsonProperty는 스웨거에 적용해주지 않음 alias는 읽을 때만, property는 읽고 쓰기
      */
     @Getter
     @NoArgsConstructor
     @ToString
     public static class Item {
         
-        @JsonProperty("lckrId")
+        @JsonAlias("lckrId")
         private String lockerId; // 보관함 고유 ID
         
-        @JsonProperty("LAT")
+        @JsonAlias("LAT")
         private Double latitude; // 위도 (Latitude)
         
-        @JsonProperty("LOT")
+        @JsonAlias("LOT")
         private Double longitude; // 경도 (Longitude)
         
-        @JsonProperty("lckrCnt")
+        @JsonAlias("lckrCnt")
         private Integer totalCount; // 전체 보관함 개수
         
-        @JsonProperty("wkdayOperBgngTm")
-        private String weekdayStartTime; // 평일 운영 시작 시각 (예: 05:00)
+        @JsonAlias("wkdayOperBgngTm")
+        private String weekdayStartTime; // 평일 운영 시작 시각
         
-        @JsonProperty("wkdayOperEndTm")
-        private String weekdayEndTime; // 평일 운영 종료 시각 (예: 24:00)
+        @JsonAlias("wkdayOperEndTm")
+        private String weekdayEndTime; // 평일 운영 종료 시각
         
-        @JsonProperty("satOperBgngTm")
+        @JsonAlias("satOperBgngTm")
         private String weekendStartTime; // 주말/공휴일 운영 시작 시각
         
-        @JsonProperty("satOperEndTm")
+        @JsonAlias("satOperEndTm")
         private String weekendEndTime; // 주말/공휴일 운영 종료 시각
         
-        @JsonProperty("addCrgUnitHr")
-        private String addChargeUnit; // 추가 요금 단위 시간 (분 단위 문자열)
+        @JsonAlias("addCrgUnitHr")
+        private String addChargeUnit; // 추가 요금 단위 시간
         
-        @JsonProperty("stnNm")
-        private String stationName; // 지하철역 이름 (예: 명동역)
+        @JsonAlias("stnNm")
+        private String stationName; // 지하철역 이름
         
-        @JsonProperty("lckrNm")
-        private String lockerName; // 보관함 이름 (예: 명동역 1번 보관함)
+        @JsonAlias("lckrNm")
+        private String lockerName; // 보관함 이름
         
-        @JsonProperty("lckrDtlLocNm")
+        @JsonAlias("lckrDtlLocNm")
         private String lockerDetailLocation; // 보관함 상세 설치 위치
         
-        @JsonProperty("utztnCrgExpln")
+        @JsonAlias("utztnCrgExpln")
         private String basicChargeInfo; // 기본 이용 요금 설명
         
-        @JsonProperty("addCrgExpln")
-        private String addChargeInfo;  // 추가 이용 요금 설명
+        @JsonAlias("addCrgExpln")
+        private String addChargeInfo; // 추가 이용 요금 설명
         
-        @JsonProperty("kpngLmtLckrExpln")
+        @JsonAlias("kpngLmtLckrExpln")
         private String keepLimitInfo; // 보관 제한 물품 안내
         
-        @JsonProperty("lckrWdthLenExpln")
+        @JsonAlias("lckrWdthLenExpln")
         private String lockerWidth; // 보관함 가로 길이 정보
         
-        @JsonProperty("lckrDpthExpln")
+        @JsonAlias("lckrDpthExpln")
         private String lockerDepth; // 보관함 깊이 정보
         
-        @JsonProperty("lckrHgtExpln")
+        @JsonAlias("lckrHgtExpln")
         private String lockerHeight; // 보관함 높이 정보
     }
 }

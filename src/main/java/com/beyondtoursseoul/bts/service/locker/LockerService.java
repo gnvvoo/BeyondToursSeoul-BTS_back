@@ -45,7 +45,7 @@ public class LockerService {
      */
     public LockerApiResponseDto fetchLockerData() {
         // 요청 url
-        String apiUrl = String.format("http://openapi.seoul.go.kr:8088/%s/json/getFcLckr/1/10/", seoulOpenApiKey);
+        String apiUrl = String.format("http://openapi.seoul.go.kr:8088/%s/json/getFcLckr/1/3/", seoulOpenApiKey);
         log.info("Calling Locker API: {}", apiUrl);
 
         // DTO 클래스로 파싱

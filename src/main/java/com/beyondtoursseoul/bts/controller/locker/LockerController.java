@@ -27,7 +27,7 @@ public class LockerController {
 
     /// 물품보관함 데이터 호출 api
     @Operation(
-            summary = "물품보관함 외부 API 테스트 호출",
+            summary = "물품보관함 외부 API 테스트 호출(3개)",
             description = "서울시 열린데이터 광장 API로부터 실시간 물품보관함 데이터를 가져와 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "데이터 호출 성공"),
@@ -39,7 +39,7 @@ public class LockerController {
 
     /// DB에 물품보관함 데이터 insert, update 하는 메서드 - 번역 포함 (2주에 한 번 스케쥴링 설정)
     @Operation(
-            summary = "물품보관함 데이터 DB 동기화",
+            summary = "물품보관함 데이터 DB 동기화 (임의호출X - 토큰 제한)",
             description = "외부 API 데이터를 호출하여 DB(Supabase)에 최신 정보를 Insert 또는 Update합니다. 번역 데이터도 함께 갱신됩니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "동기화 성공"),
