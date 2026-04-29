@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @Service
@@ -32,6 +34,10 @@ public class SupabaseAuthService implements AuthService {
 
     @Value("${SUPABASE_PUBLISHABLE_KEY}")
     private String publishableKey;
+
+    // Google 로그인 완료 후 프론트가 다시 돌아올 callback URL이다.
+    @Value("${FRONTEND_AUTH_CALLBACK_URL}")
+    private String frontendAuthCallbackUrl;
 
 //
     @Override
@@ -114,6 +120,17 @@ public class SupabaseAuthService implements AuthService {
                 result.getUser().getEmail(),
                 "로그인 성공"
         );
+    }
+
+    @Override
+    public URI getGoogleLoginUrl() {
+        return UriComponentsBuilder.fromUriString(supabaseUrl)
+                .path("/auth/v1/authorize")
+                .queryParam("provider", "google")
+                .queryParam("redirect_to", frontendAuthCallbackUrl)
+                .build()
+                .encode()
+                .toUri();
     }
 
     @Override

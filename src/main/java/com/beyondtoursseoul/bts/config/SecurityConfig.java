@@ -33,6 +33,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/google")
+                        .permitAll()
                         // 서버 상태 확인용 경로는 공개한다.
                         .requestMatchers(HttpMethod.GET, "/health")
                         .permitAll()

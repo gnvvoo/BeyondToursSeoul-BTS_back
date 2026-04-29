@@ -6,9 +6,12 @@ import com.beyondtoursseoul.bts.dto.auth.MeResponse;
 import com.beyondtoursseoul.bts.dto.auth.SignupRequest;
 import com.beyondtoursseoul.bts.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -24,6 +27,15 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @GetMapping("/google")
+    public ResponseEntity<Void> googleLogin() {
+        URI googleLoginUrl = authService.getGoogleLoginUrl();
+
+        return ResponseEntity.status(302)
+                .location(googleLoginUrl)
+                .build();
     }
 
     @GetMapping("/me")
