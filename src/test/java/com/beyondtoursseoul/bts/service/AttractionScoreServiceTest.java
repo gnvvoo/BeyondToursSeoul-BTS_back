@@ -47,13 +47,13 @@ class AttractionScoreServiceTest {
 
     @Test
     void 카테고리별_대표_시간대_매핑이_올바르다() {
-        assertThat(AttractionScoreService.primaryTimeSlot("39")).isEqualTo(TimeSlot.EVENING);
-        assertThat(AttractionScoreService.primaryTimeSlot("15")).isEqualTo(TimeSlot.EVENING);
-        assertThat(AttractionScoreService.primaryTimeSlot("28")).isEqualTo(TimeSlot.MORNING);
-        assertThat(AttractionScoreService.primaryTimeSlot("32")).isEqualTo(TimeSlot.MORNING);
-        assertThat(AttractionScoreService.primaryTimeSlot("12")).isEqualTo(TimeSlot.AFTERNOON);
-        assertThat(AttractionScoreService.primaryTimeSlot("14")).isEqualTo(TimeSlot.AFTERNOON);
-        assertThat(AttractionScoreService.primaryTimeSlot("38")).isEqualTo(TimeSlot.AFTERNOON);
-        assertThat(AttractionScoreService.primaryTimeSlot(null)).isEqualTo(TimeSlot.AFTERNOON);
+        assertThat(AttractionScoreService.primaryTimeSlot("39")).isEqualTo(TimeSlot.EVENING);   // 음식점
+        assertThat(AttractionScoreService.primaryTimeSlot("15")).isEqualTo(TimeSlot.EVENING);   // 행사/공연
+        assertThat(AttractionScoreService.primaryTimeSlot("28")).isEqualTo(TimeSlot.MORNING);   // 레포츠
+        assertThat(AttractionScoreService.primaryTimeSlot("32")).isEqualTo(TimeSlot.MORNING);   // 숙박
+        assertThat(AttractionScoreService.primaryTimeSlot("12")).isEqualTo(TimeSlot.AFTERNOON); // 관광지
+        assertThat(AttractionScoreService.primaryTimeSlot("14")).isEqualTo(TimeSlot.AFTERNOON); // 문화시설
+        assertThat(AttractionScoreService.primaryTimeSlot("38")).isEqualTo(TimeSlot.AFTERNOON); // 쇼핑
+        assertThat(AttractionScoreService.primaryTimeSlot(null)).isEqualTo(TimeSlot.AFTERNOON); // null
     }
 }

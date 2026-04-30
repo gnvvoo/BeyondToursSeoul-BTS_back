@@ -1,5 +1,6 @@
 package com.beyondtoursseoul.bts.service;
 
+import com.beyondtoursseoul.bts.service.AttractionApiService;
 import com.beyondtoursseoul.bts.domain.Attraction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
