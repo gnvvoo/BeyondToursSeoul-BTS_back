@@ -45,3 +45,9 @@ google:
   translation:
     api:
       key: ${GOOGLE_TRANSLATION_API_KEY}
+
+# 공공데이터 포털 API 키
+public:
+  data:
+    api:
+      key: ${PUBLIC_DATA_API_KEY}
