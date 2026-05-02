@@ -14,7 +14,7 @@ public interface AuthService {
 
     AuthResponse login(LoginRequest request);
 
-    URI getGoogleLoginUrl();
+    URI getGoogleLoginUrl(String redirectTo, String origin, String referer);
 
     MeResponse me(Jwt jwt);
 }
