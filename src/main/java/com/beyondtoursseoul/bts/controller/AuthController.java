@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,8 +63,15 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Google 로그인 시작 URL 생성 실패")
     })
     @GetMapping("/google")
-    public ResponseEntity<Void> googleLogin() {
-        URI googleLoginUrl = authService.getGoogleLoginUrl();
+    public ResponseEntity<Void> googleLogin(
+            @RequestParam(required = false) String redirectTo,
+            HttpServletRequest request
+    ) {
+        URI googleLoginUrl = authService.getGoogleLoginUrl(
+                redirectTo,
+                request.getHeader("Origin"),
+                request.getHeader("Referer")
+        );
 
         return ResponseEntity.status(302)
                 .location(googleLoginUrl)

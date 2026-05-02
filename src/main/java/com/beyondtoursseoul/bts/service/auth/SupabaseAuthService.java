@@ -19,6 +19,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -38,6 +41,9 @@ public class SupabaseAuthService implements AuthService {
     // Google 로그인 완료 후 프론트가 다시 돌아올 callback URL이다.
     @Value("${FRONTEND_AUTH_CALLBACK_URL}")
     private String frontendAuthCallbackUrl;
+
+    @Value("${frontend.allowed-origins:http://localhost:5173}")
+    private String frontendAllowedOrigins;
 
 //
     @Override
@@ -123,14 +129,101 @@ public class SupabaseAuthService implements AuthService {
     }
 
     @Override
-    public URI getGoogleLoginUrl() {
+    public URI getGoogleLoginUrl(String redirectTo, String origin, String referer) {
         return UriComponentsBuilder.fromUriString(supabaseUrl)
                 .path("/auth/v1/authorize")
                 .queryParam("provider", "google")
-                .queryParam("redirect_to", frontendAuthCallbackUrl)
+                .queryParam("redirect_to", resolveFrontendAuthCallbackUrl(redirectTo, origin, referer))
                 .build()
                 .encode()
                 .toUri();
+    }
+
+    private URI resolveFrontendAuthCallbackUrl(String redirectTo, String origin, String referer) {
+        if (isAllowedCallbackUrl(redirectTo)) {
+            return URI.create(redirectTo);
+        }
+
+        String requestOrigin = extractOrigin(origin);
+        if (requestOrigin == null) {
+            requestOrigin = extractOrigin(referer);
+        }
+
+        if (requestOrigin != null && isAllowedOrigin(requestOrigin)) {
+            return URI.create(requestOrigin + callbackPathAndQuery());
+        }
+
+        return URI.create(frontendAuthCallbackUrl);
+    }
+
+    private boolean isAllowedCallbackUrl(String callbackUrl) {
+        if (callbackUrl == null || callbackUrl.isBlank()) {
+            return false;
+        }
+
+        String callbackOrigin = extractOrigin(callbackUrl);
+        return callbackOrigin != null && isAllowedOrigin(callbackOrigin);
+    }
+
+    private boolean isAllowedOrigin(String origin) {
+        return allowedOrigins().contains(origin);
+    }
+
+    private Set<String> allowedOrigins() {
+        Set<String> origins = new LinkedHashSet<>();
+        Arrays.stream(frontendAllowedOrigins.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isBlank())
+                .map(this::stripTrailingSlash)
+                .forEach(origins::add);
+
+        String fallbackOrigin = extractOrigin(frontendAuthCallbackUrl);
+        if (fallbackOrigin != null) {
+            origins.add(fallbackOrigin);
+        }
+
+        return origins;
+    }
+
+    private String extractOrigin(String url) {
+        if (url == null || url.isBlank()) {
+            return null;
+        }
+
+        try {
+            URI uri = URI.create(url);
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                return null;
+            }
+
+            String origin = uri.getScheme() + "://" + uri.getHost();
+            if (uri.getPort() != -1) {
+                origin += ":" + uri.getPort();
+            }
+            return origin;
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private String callbackPathAndQuery() {
+        URI fallbackUri = URI.create(frontendAuthCallbackUrl);
+        String path = fallbackUri.getRawPath() == null || fallbackUri.getRawPath().isBlank()
+                ? "/"
+                : fallbackUri.getRawPath();
+
+        if (fallbackUri.getRawQuery() != null && !fallbackUri.getRawQuery().isBlank()) {
+            return path + "?" + fallbackUri.getRawQuery();
+        }
+
+        return path;
+    }
+
+    private String stripTrailingSlash(String value) {
+        if (value.endsWith("/")) {
+            return value.substring(0, value.length() - 1);
+        }
+        return value;
     }
 
     @Override
